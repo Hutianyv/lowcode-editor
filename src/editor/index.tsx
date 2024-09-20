@@ -9,9 +9,8 @@ import { Preview } from "./components/Preview";
 export default function LowCodeEditor() {
 
   const { mode } = useComponetsStore();
-
   return <div className="h-[100vh] flex flex-col">
-    <div className="h-[60px] flex items-center border-b-[1px] border-[#000]"><Header /></div>
+    <div className="h-[70px] flex items-center border-b-[1px] border-[#000]"><Header /></div>
     {
       mode ==='edit'? <Allotment>
       <Allotment.Pane preferredSize={240} maxSize={300} minSize={200}>
@@ -27,4 +26,5 @@ export default function LowCodeEditor() {
     : <Preview />
     }
   </div>
+
 }

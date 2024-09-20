@@ -1,13 +1,44 @@
-import React, { MouseEventHandler, useState } from "react";
+import React, { MouseEventHandler, useEffect, useState, useLayoutEffect, useCallback  } from "react";
 import { useComponentConfigStore } from "../stores/component-config";
 import { Component, useComponetsStore } from "../stores/components"
 import HoverMask from "../components/HoverMask";
 import SelectedMask from "../components/SelectedMask";
+import { compress, uncompress } from "../../utils/fflate"
+import { debounce } from "lodash-es";
 
 export function EditArea() {
-    const { components, curComponentId, setCurComponentId} = useComponetsStore();
+    const { components, curComponentId, setCurComponentId, setComponents} = useComponetsStore();
     const { componentConfig } = useComponentConfigStore();
 
+    
+    const getComponentsFromUrl = () => {
+        let components: Component[] | undefined;
+        try {
+            const hash = uncompress(decodeURIComponent(window.location.hash.slice(1)));
+            components = JSON.parse(hash);
+        } catch (err) {
+            console.error("Error parsing components from URL:", err);
+        }
+        return components;
+    };
+
+    useLayoutEffect(() => {
+        const components = getComponentsFromUrl();
+        if (components) {
+            setComponents(components);
+        }
+    }, []);
+    
+    const updateHash = useCallback(
+        debounce((newHash) => {
+            window.location.hash = newHash;
+        }, 300), 
+        []
+    );
+    useEffect(() => {
+        const hash = JSON.stringify(components);
+        updateHash(encodeURIComponent(compress(hash)));
+    }, [components]);
 
     function renderComponents(components: Component[]): React.ReactNode {
         return components.map((component: Component) => {

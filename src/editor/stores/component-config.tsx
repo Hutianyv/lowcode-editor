@@ -15,6 +15,10 @@ import FormDev from "../materials/Form/dev";
 import FormProd from "../materials/Form/prod";
 import FormItemDev from "../materials/FormItem/dev";
 import FormItemProd from "../materials/FormItem/prod";
+import FlexContainerDev  from "../materials/FlexContainer/dev";
+import FlexContainerProd from "../materials/FlexContainer/prod";
+import ImageDev from "../materials/Image/dev";
+import ImageProd from "../materials/Image/prod";
 
 export interface ComponentSetter {
   name: string;
@@ -39,6 +43,7 @@ export interface ComponentConfig {
   stylesSetter?: ComponentSetter[];
   events?: ComponentEvent[];
   methods?: ComponentMethod[];
+  canFlowEdit?: boolean;
   dev: any;
   prod: any;
 }
@@ -63,6 +68,19 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
     Container: {
       name: "Container",
       defaultProps: {},
+      stylesSetter: [
+        {
+          name: "width",
+          label: "宽度",
+          type: "inputNumber",
+        },
+        {
+          name: "height",
+          label: "高度",
+          type: "inputNumber",
+        },
+        
+      ],
       desc: "容器",
       dev: ContainerDev,
       prod: ContainerProd,
@@ -110,8 +128,9 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
         {
           name: 'onDoubleClick',
           label: '双击事件'
-        }
+        },
       ],
+      canFlowEdit: false,
       desc: "按钮",
       dev: ButtonDev,
       prod: ButtonProd,
@@ -148,7 +167,8 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
             name: 'close',
             label: '关闭弹窗'
         }
-      ],    
+      ],
+      canFlowEdit: false,
       desc: '弹窗',
       dev: ModalDev,
       prod: ModalProd
@@ -229,8 +249,8 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
     ],    
       dev: FormDev,
       prod: FormProd
-   },
-   FormItem: {
+    },
+    FormItem: {
     name: 'FormItem',
     desc: '表单项',
     defaultProps: {
@@ -277,11 +297,121 @@ export const useComponentConfigStore = create<State & Action>((set) => ({
         ],
       }
     ]
-}
+    },
+    FlexContainer: {
+      name: 'FlexContainer',
+      desc: '弹性布局容器',
+      defaultProps: {
+        flex: 'flex',
+        vertical: false,
+        gap: 'middle',
+        wrap: true,
+        justify: 'start',
+        align: 'start'
+      },
+      dev: FlexContainerDev,
+      prod: FlexContainerProd,
+      setter: [
+        {
+          name: 'vertical',
+          label: '方向',
+          type: 'select',
+          options: [
+            { label: '水平', value:false },
+            { label: '垂直', value:true }
+          ]
+        },
+        {
+          name: 'gap',
+          label: '间距',
+          type: 'select',
+          options: [
+            { label: '小', value:'small' },
+            { label: '中', value:'middle' },
+            { label: '大', value:'large' }
+          ]
+        },
+        {
+          name: 'wrap',
+          label: '自动换行',
+          type: 'select',
+          options: [
+            { label: '换行', value:true },
+            { label: '不换行', value:false },
+          ]
+        },
+        {
+          name: 'justify',
+          label: '主轴对齐方式',
+          type: 'select',
+          options: [
+            { label: '居首', value:'start' },
+            { label: '居中', value:'center' },
+            { label: '居尾', value:'end' },
+            { label: '均分', value:'space-between' },
+          ]
+        },
+        {
+          name: 'align',
+          label: '侧轴对齐方式',
+          type: 'select',
+          options: [
+            { label: '居首', value:'start' },
+            { label: '居中', value:'center' },
+            { label: '居尾', value:'end' },
+          ]
+        }
+      ],
+      stylesSetter: [
+        {
+          name: "width",
+          label: "宽度",
+          type: "inputNumber",
+        },
+        {
+          name: "height",
+          label: "高度",
+          type: "inputNumber",
+        },
+      ]
 
-  
-  
+    },
+    Image: {
+      name: 'Image',
+      desc: '图片',
+      defaultProps: {
+        src: '/vite.svg',
+        altText: '图片描述',
+      },
+      setter: [
+        {
+          name: 'src',
+          label: '图片路径',
+          type: 'input',
+        },
+        {
+          name: 'altText',
+          label: '图片描述',
+          type: 'input',
+        },
+      ],
+      stylesSetter: [
+        {
+          name: "width",
+          label: "宽度",
+          type: "inputNumber",
+        },
+        {
+          name: "height",
+          label: "高度",
+          type: "inputNumber",
+        },
+      ],
+      dev: ImageDev,
+      prod: ImageProd,
+    }
   },
+
   registerComponent: (name, componentConfig) =>
     set((state) => {
       return {

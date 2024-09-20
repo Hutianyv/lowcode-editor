@@ -1,4 +1,4 @@
-import { Collapse, Input, Select, CollapseProps, Button } from "antd";
+import { Collapse, CollapseProps, Button, Switch } from "antd";
 import { useComponetsStore, getComponentById } from "../../stores/components";
 import { useComponentConfigStore } from "../../stores/component-config";
 import type { ComponentEvent } from "../../stores/component-config";
@@ -7,7 +7,7 @@ import { useState } from "react";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 export function ComponentEvent() {
-  const { curComponentId, curComponent, updateComponentProps, components } =
+  const { curComponent, updateComponentProps, setFlowEdit, components } =
     useComponetsStore();
   const { componentConfig } = useComponentConfigStore();
   const [actionModalOpen, setActionModalOpen] = useState(false);
@@ -168,7 +168,7 @@ export function ComponentEvent() {
                       key="componentMethod"
                       className="border border-[#aaa] m-[10px] p-[10px] relative"
                     >
-                      <div className="text-[blue]">组件方法</div>
+                      <div className="text-[blue]">组件联动逻辑</div>
                       <div>
                         {
                           getComponentById(item.config.componentId, components)
@@ -240,7 +240,7 @@ export function ComponentEvent() {
 
     setActionModalOpen(false);
   }
-
+  
   return (
     <div className="px-[10px]">
       <Collapse
@@ -250,6 +250,15 @@ export function ComponentEvent() {
           (item) => item.name
         )}
       />
+      {'canFlowEdit' in componentConfig[curComponent.name] && (
+        <div className="flex items-center justify-between p-2">
+        <div className="text-blue-500 font-bold">参与逻辑编排</div>
+        <Switch
+          checked={curComponent.flowEdit}
+          onChange={(checked)=>setFlowEdit(curComponent.id,checked)}
+        />
+        </div>
+        )}
       <ActionModal
         visible={actionModalOpen}
         handleOk={handleModalOk}
